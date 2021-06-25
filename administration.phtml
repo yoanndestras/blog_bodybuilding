@@ -1,0 +1,64 @@
+<?php
+    
+   
+
+    session_start();
+    if(!$_SESSION['password'])
+    {
+        header('Location: adminlogin.phtml');
+    }
+
+    $pdo = new PDO('mysql:host=localhost;dbname=blog;port=3306', 'root', 'root');
+    $pdo->exec('SET NAMES UTF8');
+
+    $query = $pdo->prepare
+    (
+        "SELECT * from article"
+    );
+
+    $query->execute();
+    $listeArticles = $query->fetchAll();
+    include('nav_gray.html');
+?>
+        <main>  
+
+
+        
+
+        
+
+        <table id="article" class="table table-bordred table-striped" >
+
+        <h4 style="text-align:center; margin:20px" >Article List</h4>
+
+            <tr style="text-align: center" >
+                <th>Titre</th>
+                <th>Article</th>
+                <th>Auteur</th>
+                <th>Catégorie</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        <?php
+                foreach($listeArticles as $article)
+                    {
+                        echo 
+                        '<tr>
+                        <td>'.$article['Titre'].'</td>
+                        <td>'.$article['Article'].'</td>
+                        <td>'.$article['Auteur'].'</td>
+                        <td>'.$article['Categorie'].'</td>
+                        <td style="width:40px;" ><a href= article_modifier.phtml?Id_article='.$article['Id_article'].'><i class="fas fa-edit"></i></a></td>
+                        <td style="width:40px;" ><a href=article_supprimer.php?Id_article='.$article['Id_article'].'><i class="fas fa-times"></i></a></td>
+                        </tr>';
+                    }
+            ?>
+            
+            </table>
+
+            <div class="text-center">
+                <a href="article_edit.phtml" class="btn btn-info btn-block rounded-0 py-2"><strong>Write an article</strong></a>
+            </div>
+        </main>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<?php
+
+    $pdo = new PDO('mysql:host=localhost;dbname=blog;port=3306', 'root', 'root');
+    $pdo->exec('SET NAMES UTF8');
+
+    $query = $pdo->prepare
+    (
+        "SELECT * from article ORDER BY Date_creation DESC"
+    );
+
+    $query->execute();
+    $listeArticles = $query->fetchAll();
+?>
+<?php
+	include('include.html');
+?>
+<main>
+<div class="container">
+	<h1>Blog </h1>
+	
+	<section id="accueil">
+		<article>
+			<?php	
+				foreach($listeArticles as $article)
+					{
+						if(strlen($article['Article'])>20)
+						{
+							$article['Article']=substr($article['Article'],0,20).'[...]';
+						}
+						echo '<h3> <a href= article_description.phtml?Id_article='.$article['Id_article'].'><i class="fas fa-arrow-circle-right"></i> '.$article['Titre'].'</a></h3>
+						<p>'.$article['Article'].'</p>
+						<p>Rédigé par '.$article['Auteur'].' le '.$article['Date_creation'].'</p>';
+					}
+			?>
+		</article>
+	<section>
+	</div>
+</main>
+<?php
+	include('footer.html');
+?>
+</body>
+</html>

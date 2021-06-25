@@ -1,0 +1,67 @@
+<?php
+session_start();
+$pdo = new PDO('mysql:host=localhost;dbname=blog;port=3306', 'root', 'root');
+$pdo->exec('SET NAMES UTF8');
+
+
+
+$query = $pdo->prepare
+(
+    "SELECT * from admin where Login = ? and Password = ?"
+);
+
+
+
+if(isset($_POST['connection']))
+    {
+        if (!empty($_POST['login']) and !empty($_POST['password']))
+        {
+            /*
+            $admin_login = "admin";
+            $admin_mdp = "admin1234";
+            */
+
+            $login_saisi = htmlspecialchars($_POST['login']);
+            $mdp_saisi = htmlspecialchars($_POST['password']);
+
+            $query->execute([$login_saisi, $mdp_saisi]);
+
+            if($admin = $query->fetch())
+            {
+                $_SESSION['password'] = $mdp_saisi;
+                header('Location: administration.phtml');
+            }
+            else
+            {
+                echo "Login ou mot de passe incorrect";
+            }
+        }
+        else
+        {
+            echo "Tous les champs ne sont pas complétés";
+        }
+    }
+		include('nav_gray.html');
+	?>
+    
+<link rel="stylesheet" href="css/connect.css">
+<main>    
+
+<div class="wrapper fadeInDown">
+  <div id="formContent">
+
+    <div class="fadeIn first">
+    <i style="font-size:1.5em;margin-top:20px" class="fas fa-users-cog"></i>
+    </div>
+
+    <form method="POST" action="">
+      <input type="text" id="login" class="fadeIn second" name="login" placeholder="login">
+      <input type="password" id="password" class="fadeIn third" name="password" placeholder="password">
+      <input type="submit" name="connection" class="fadeIn fourth" value="Log In">
+    </form>
+  </div>
+</div>
+
+</main>
+</body>
+</html>
